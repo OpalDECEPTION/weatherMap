@@ -10,13 +10,13 @@
 const char* ssid = "EngineeringSubNet";
 const char* password = "password";
 
-
 int temp_f;
 float avgTemp;
 
 // OpenWeatherMap API key
 const String api_key = "42792055e019d1867f4d310c14beb28b";
 Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
+
 
 void setup() {
   Serial.begin(115200);
@@ -37,6 +37,7 @@ void setup() {
   pixels.clear();
   pixels.show();
 }
+
 
 float getWeather(const String& city_name) {
   if (WiFi.status() == WL_CONNECTED) {
@@ -75,6 +76,7 @@ float getWeather(const String& city_name) {
   }
 }
 
+
 void showLED(float cityTemp, float avgTemp, int pixelIndex, const char* cityName) {
   float diff = cityTemp - avgTemp;
   int calcTemp = (int)round(diff * 50);
@@ -91,34 +93,30 @@ void showLED(float cityTemp, float avgTemp, int pixelIndex, const char* cityName
 
 
 void loop() {
-  float temp_wor = getWeather("Worcester");
-  float temp_nan = getWeather("Nantucket");
-  float temp_ply = getWeather("Plymouth");
+  float temp_wor = getWeather("Worcester,MA,US");
+  float temp_nan = getWeather("Nantucket,MA,US");
+  float temp_ply = getWeather("Plymouth,MA,US");
   float temp_slm = getWeather("Salem,MA,US");
   float temp_sgf = getWeather("Springfield,MA,US");
-  float temp_tau = getWeather("Taunton");
-  float temp_pit = getWeather("Pittsfield");
-  float temp_bos = getWeather("Boston");
-  float temp_bns = getWeather("Barnstable");
+  float temp_tau = getWeather("Taunton,MA,US");
+  float temp_pit = getWeather("Pittsfield,MA,US");
+  float temp_bos = getWeather("Boston,MA,US");
+  float temp_bns = getWeather("Barnstable,MA,US");
 
   avgTemp = (temp_wor + temp_nan + temp_ply + temp_slm + temp_sgf + temp_tau + temp_pit + temp_bos + temp_bns) / 9;
 
   Serial.print("Avg Temp = ");
   Serial.println(avgTemp);
 
-  showLED(temp_pit, avgTemp, 0, "Pittsfield");
+  showLED(temp_pit, avgTemp, 0, "Pittsfield,MA,US");
   showLED(temp_sgf, avgTemp, 1, "Springfield,MA,US");
-  showLED(temp_wor, avgTemp, 2, "Worcester");
-  showLED(temp_slm, avgTemp, 3, "Salem");
-  showLED(temp_bos, avgTemp, 4, "Boston");
-  showLED(temp_tau, avgTemp, 5, "Taunton");
-  showLED(temp_ply, avgTemp, 6, "Plymouth");
-  showLED(temp_nan, avgTemp, 7, "Nantucket");
-  showLED(temp_bns, avgTemp, 8, "Barnstable");
-
-
-
-
+  showLED(temp_wor, avgTemp, 2, "Worcester,MA,US");
+  showLED(temp_slm, avgTemp, 3, "Salem,MA,US");
+  showLED(temp_bos, avgTemp, 4, "Boston,MA,US");
+  showLED(temp_tau, avgTemp, 5, "Taunton,MA,US");
+  showLED(temp_ply, avgTemp, 6, "Plymouth,MA,US");
+  showLED(temp_bns, avgTemp, 7, "Barnstable,MA,US");
+  showLED(temp_nan, avgTemp, 8, "Nantucket,MA,US");
 
   pixels.show();
 
