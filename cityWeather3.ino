@@ -85,7 +85,7 @@ void showLED(float cityTemp, float avgTemp, int pixelIndex, const char* cityName
   if (cityTemp >= avgTemp) {
     pixels.setPixelColor(pixelIndex, pixels.Color(255 - calcTemp, 255, 0));
   } else {
-    pixels.setPixelColor(pixelIndex, pixels.Color(255 - abs(calcTemp), 0, 255));
+    pixels.setPixelColor(pixelIndex, pixels.Color(255 - abs(calcTemp), 0, 20+(abs(calcTemp))/2));
   }
 
   Serial.printf("%s LED → calcTemp=%d\n", cityName, calcTemp);
