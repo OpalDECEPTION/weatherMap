@@ -108,15 +108,16 @@ void loop() {
   Serial.print("Avg Temp = ");
   Serial.println(avgTemp);
 
-  showLED(temp_pit, avgTemp, 0, "Pittsfield,MA,US");
-  showLED(temp_sgf, avgTemp, 1, "Springfield,MA,US");
-  showLED(temp_wor, avgTemp, 2, "Worcester,MA,US");
-  showLED(temp_slm, avgTemp, 3, "Salem,MA,US");
+  
+  showLED(temp_nan, avgTemp, 0, "Nantucket,MA,US");
+  showLED(temp_bns, avgTemp, 1, "Barnstable,MA,US");
+  showLED(temp_ply, avgTemp, 2, "Plymouth,MA,US");
+  showLED(temp_tau, avgTemp, 3, "Taunton,MA,US");
   showLED(temp_bos, avgTemp, 4, "Boston,MA,US");
-  showLED(temp_tau, avgTemp, 5, "Taunton,MA,US");
-  showLED(temp_ply, avgTemp, 6, "Plymouth,MA,US");
-  showLED(temp_bns, avgTemp, 7, "Barnstable,MA,US");
-  showLED(temp_nan, avgTemp, 8, "Nantucket,MA,US");
+  showLED(temp_slm, avgTemp, 5, "Salem,MA,US");
+  showLED(temp_wor, avgTemp, 6, "Worcester,MA,US");
+  showLED(temp_sgf, avgTemp, 7, "Springfield,MA,US");
+  showLED(temp_pit, avgTemp, 8, "Pittsfield,MA,US");
 
   pixels.show();
 
