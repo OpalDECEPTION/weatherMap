@@ -79,16 +79,16 @@ float getWeather(const String& city_name) {
 
 void showLED(float cityTemp, float avgTemp, int pixelIndex, const char* cityName) {
   float diff = cityTemp - avgTemp;
-  int calcTemp = (int)round(diff * 50);
+  int calcTemp = (int)round(diff * 100);
   calcTemp = constrain(calcTemp, -255, 255);
+  Serial.printf("%s LED → calcTemp=%d\n", cityName, calcTemp);
 
   if (cityTemp >= avgTemp) {
     pixels.setPixelColor(pixelIndex, pixels.Color(255 - calcTemp, 255, 0));
   } else {
-    pixels.setPixelColor(pixelIndex, pixels.Color(255 - abs(calcTemp), 0, 20+(abs(calcTemp))/2));
+    pixels.setPixelColor(pixelIndex, pixels.Color(abs(200 - abs(calcTemp)), 0, (50 + (abs(calcTemp)) * 0.8)));
   }
 
-  Serial.printf("%s LED → calcTemp=%d\n", cityName, calcTemp);
 }
 
 
@@ -108,18 +108,18 @@ void loop() {
   Serial.print("Avg Temp = ");
   Serial.println(avgTemp);
 
-  
+
   showLED(temp_nan, avgTemp, 0, "Nantucket,MA,US");
   showLED(temp_bns, avgTemp, 1, "Barnstable,MA,US");
   showLED(temp_ply, avgTemp, 2, "Plymouth,MA,US");
   showLED(temp_tau, avgTemp, 3, "Taunton,MA,US");
-  showLED(temp_bos, avgTemp, 4, "Boston,MA,US");
-  showLED(temp_slm, avgTemp, 5, "Salem,MA,US");
+  showLED(temp_slm, avgTemp, 4, "Salem,MA,US");
+  showLED(temp_bos, avgTemp, 5, "Boston,MA,US");
   showLED(temp_wor, avgTemp, 6, "Worcester,MA,US");
   showLED(temp_sgf, avgTemp, 7, "Springfield,MA,US");
   showLED(temp_pit, avgTemp, 8, "Pittsfield,MA,US");
 
   pixels.show();
 
-  delay(5 * 60 * 1000);
+  delay(15 * 60 * 1000);
 }
