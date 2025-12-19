@@ -88,11 +88,11 @@ void showLED(float cityTemp, float avgTemp, int pixelIndex, const char* cityName
   } else {
     pixels.setPixelColor(pixelIndex, pixels.Color(abs(200 - abs(calcTemp)), 0, (50 + (abs(calcTemp)) * 0.8)));
   }
-
 }
 
 
 void loop() {
+  
   float temp_wor = getWeather("Worcester,MA,US");
   float temp_nan = getWeather("Nantucket,MA,US");
   float temp_ply = getWeather("Plymouth,MA,US");
