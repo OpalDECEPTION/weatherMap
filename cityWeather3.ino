@@ -8,13 +8,13 @@
 
 // Replace with your network credentials
 const char* ssid = "EngineeringSubNet";
-const char* password = "password";
+const char* password = "#########";
 
 int temp_f;
 float avgTemp;
 
 // OpenWeatherMap API key
-const String api_key = "42792055e019d1867f4d310c14beb28b";
+const String api_key = "################################";
 Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
 
