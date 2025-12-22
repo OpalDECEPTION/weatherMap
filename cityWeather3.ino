@@ -1,3 +1,4 @@
+// Include all of my libraries
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
@@ -6,7 +7,7 @@
 #define PIN 5        // GPIO pin connected to DIN 5
 #define NUMPIXELS 9  // Number of NeoPixels
 
-// Replace with your network credentials
+// Network details
 const char* ssid = "EngineeringSubNet";
 const char* password = "#########";
 
@@ -14,7 +15,7 @@ int temp_f;
 float avgTemp;
 
 // OpenWeatherMap API key
-const String api_key = "################################";
+const String api_key = "#############################";
 Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
 
@@ -34,6 +35,8 @@ void setup() {
   Serial.println(WiFi.localIP());
 
   pixels.begin();
+
+  // Clear whatever might have been on the pixels before
   pixels.clear();
   pixels.show();
 }
@@ -58,12 +61,12 @@ float getWeather(const String& city_name) {
         Serial.print("deserializeJson() failed: ");
         Serial.println(error.c_str());
         http.end();
-        return NAN;  // return invalid value
+        return NAN;
       } else {
         float temp_f = doc["main"]["temp"];
         Serial.printf("%s Temperature: %.1f°F\n", city_name.c_str(), temp_f);
         http.end();
-        return temp_f;  // return temperature
+        return temp_f;
       }
     } else {
       Serial.printf("[HTTP] GET failed for %s, error: %s\n", city_name.c_str(), http.errorToString(httpResponseCode).c_str());
@@ -77,22 +80,9 @@ float getWeather(const String& city_name) {
 }
 
 
-void showLED(float cityTemp, float avgTemp, int pixelIndex, const char* cityName) {
-  float diff = cityTemp - avgTemp;
-  int calcTemp = (int)round(diff * 100);
-  calcTemp = constrain(calcTemp, -255, 255);
-  Serial.printf("%s LED → calcTemp=%d\n", cityName, calcTemp);
-
-  if (cityTemp >= avgTemp) {
-    pixels.setPixelColor(pixelIndex, pixels.Color(255 - calcTemp, 255, 0));
-  } else {
-    pixels.setPixelColor(pixelIndex, pixels.Color(abs(200 - abs(calcTemp)), 0, (50 + (abs(calcTemp)) * 0.8)));
-  }
-}
-
-
 void loop() {
-  
+
+  // Get the weather for all of the cities on my map
   float temp_wor = getWeather("Worcester,MA,US");
   float temp_nan = getWeather("Nantucket,MA,US");
   float temp_ply = getWeather("Plymouth,MA,US");
@@ -103,12 +93,13 @@ void loop() {
   float temp_bos = getWeather("Boston,MA,US");
   float temp_bns = getWeather("Barnstable,MA,US");
 
+  // Find the average temperature of all of my cities
   avgTemp = (temp_wor + temp_nan + temp_ply + temp_slm + temp_sgf + temp_tau + temp_pit + temp_bos + temp_bns) / 9;
-
   Serial.print("Avg Temp = ");
   Serial.println(avgTemp);
 
 
+  // Run the function to update all of the LEDs
   showLED(temp_nan, avgTemp, 0, "Nantucket,MA,US");
   showLED(temp_bns, avgTemp, 1, "Barnstable,MA,US");
   showLED(temp_ply, avgTemp, 2, "Plymouth,MA,US");
@@ -121,5 +112,23 @@ void loop() {
 
   pixels.show();
 
+
+  // Add a 15 minute delay
   delay(15 * 60 * 1000);
+}
+
+
+// The function to make an LED light up with the correct color based on the temperature
+void showLED(float cityTemp, float avgTemp, int pixelIndex, const char* cityName) {
+  float diff = cityTemp - avgTemp;
+  int calcTemp = (int)round(diff * 64);
+  calcTemp = constrain(calcTemp, -255, 255);
+  Serial.printf("%s LED → calcTemp=%d\n", cityName, calcTemp);
+
+  if (cityTemp >= avgTemp) {
+    pixels.setPixelColor(pixelIndex, pixels.Color(255 - calcTemp, 255, 0));
+  } else {
+    calcTemp = constrain(calcTemp, -205, 0);
+    pixels.setPixelColor(pixelIndex, pixels.Color(abs(200 + calcTemp), 0, (50 - (calcTemp))));
+  }
 }
