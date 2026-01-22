@@ -9,7 +9,7 @@
 
 // Network details
 const char* ssid = "EngineeringSubNet";
-const char* password = "#########";
+const char* password = "########";
 
 int temp_f;
 float avgTemp;
@@ -39,6 +39,58 @@ void setup() {
   // Clear whatever might have been on the pixels before
   pixels.clear();
   pixels.show();
+
+  // Get the weather for all of the cities on my map
+  float temp_wor = getWeather("Worcester,MA,US");
+  float temp_nan = getWeather("Nantucket,MA,US");
+  float temp_ply = getWeather("Plymouth,MA,US");
+  float temp_slm = getWeather("Salem,MA,US");
+  float temp_sgf = getWeather("Springfield,MA,US");
+  float temp_tau = getWeather("Taunton,MA,US");
+  float temp_pit = getWeather("Pittsfield,MA,US");
+  float temp_bos = getWeather("Boston,MA,US");
+  float temp_bns = getWeather("Barnstable,MA,US");
+
+  // Find the average temperature of all of my cities
+  avgTemp = (temp_wor + temp_nan + temp_ply + temp_slm + temp_sgf + temp_tau + temp_pit + temp_bos + temp_bns) / 9;
+
+  Serial.println("");
+  Serial.print("Avg Temp = ");
+  Serial.println(avgTemp);
+
+  float currentDiff = avgTemp - 50;
+  int currentTemp = (int)round(currentDiff * 6.5);
+  currentTemp = constrain(currentTemp, -255, 255);
+
+  if (currentTemp >= 0) {
+    pixels.setPixelColor(7, pixels.Color(255 - currentTemp, 255, 0));
+  } else {
+    currentTemp = constrain(currentTemp, -205, 0);
+    pixels.setPixelColor(7, pixels.Color(abs(205 + currentTemp), 0, (50 - (currentTemp))));
+  }
+
+  Serial.println("");
+  Serial.print("Current Temp = ");
+  Serial.println(currentTemp);
+
+  // Run the function to update all of the LEDs
+  showLED(temp_nan, avgTemp, 0, "Nantucket,MA,US");
+  showLED(temp_bns, avgTemp, 1, "Barnstable,MA,US");
+  showLED(temp_ply, avgTemp, 2, "Plymouth,MA,US");
+  showLED(temp_tau, avgTemp, 3, "Taunton,MA,US");
+  showLED(temp_slm, avgTemp, 4, "Salem,MA,US");
+  showLED(temp_bos, avgTemp, 5, "Boston,MA,US");
+  showLED(temp_wor, avgTemp, 6, "Worcester,MA,US");
+
+  showLED(temp_sgf, avgTemp, 8, "Springfield,MA,US");
+  showLED(temp_pit, avgTemp, 9, "Pittsfield,MA,US");
+
+  pixels.show();
+
+
+  // Add a 15 minute delay
+  delay(15 * 60 * 1000);
+  ESP.restart();  //restart the ESP to avoid wifi outages and replay the code
 }
 
 
@@ -79,45 +131,6 @@ float getWeather(const String& city_name) {
   }
 }
 
-
-void loop() {
-
-  // Get the weather for all of the cities on my map
-  float temp_wor = getWeather("Worcester,MA,US");
-  float temp_nan = getWeather("Nantucket,MA,US");
-  float temp_ply = getWeather("Plymouth,MA,US");
-  float temp_slm = getWeather("Salem,MA,US");
-  float temp_sgf = getWeather("Springfield,MA,US");
-  float temp_tau = getWeather("Taunton,MA,US");
-  float temp_pit = getWeather("Pittsfield,MA,US");
-  float temp_bos = getWeather("Boston,MA,US");
-  float temp_bns = getWeather("Barnstable,MA,US");
-
-  // Find the average temperature of all of my cities
-  avgTemp = (temp_wor + temp_nan + temp_ply + temp_slm + temp_sgf + temp_tau + temp_pit + temp_bos + temp_bns) / 9;
-  Serial.print("Avg Temp = ");
-  Serial.println(avgTemp);
-
-
-  // Run the function to update all of the LEDs
-  showLED(temp_nan, avgTemp, 0, "Nantucket,MA,US");
-  showLED(temp_bns, avgTemp, 1, "Barnstable,MA,US");
-  showLED(temp_ply, avgTemp, 2, "Plymouth,MA,US");
-  showLED(temp_tau, avgTemp, 3, "Taunton,MA,US");
-  showLED(temp_slm, avgTemp, 4, "Salem,MA,US");
-  showLED(temp_bos, avgTemp, 5, "Boston,MA,US");
-  showLED(temp_wor, avgTemp, 6, "Worcester,MA,US");
-  showLED(temp_sgf, avgTemp, 7, "Springfield,MA,US");
-  showLED(temp_pit, avgTemp, 8, "Pittsfield,MA,US");
-
-  pixels.show();
-
-
-  // Add a 15 minute delay
-  delay(15 * 60 * 1000);
-}
-
-
 // The function to make an LED light up with the correct color based on the temperature
 void showLED(float cityTemp, float avgTemp, int pixelIndex, const char* cityName) {
   float diff = cityTemp - avgTemp;
@@ -131,4 +144,7 @@ void showLED(float cityTemp, float avgTemp, int pixelIndex, const char* cityName
     calcTemp = constrain(calcTemp, -205, 0);
     pixels.setPixelColor(pixelIndex, pixels.Color(abs(200 + calcTemp), 0, (50 - (calcTemp))));
   }
+}
+
+void loop() {
 }
