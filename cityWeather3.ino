@@ -5,7 +5,7 @@
 #include <Adafruit_NeoPixel.h>
 
 #define PIN 5        // GPIO pin connected to DIN 5
-#define NUMPIXELS 9  // Number of NeoPixels
+#define NUMPIXELS 10  // Number of NeoPixels
 
 // Network details
 const char* ssid = "EngineeringSubNet";
